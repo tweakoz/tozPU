@@ -12,6 +12,6 @@ Properties:
 * 16 word instruction ROM
 * minimal 32 bit ALU
 
-I will eventually split this into non-pipelined minimal and pipelined fast branches. I think it makes sense to keep around the unoptimized minimal version just for reference and learnings sake.
+I will eventually split this into non-pipelined minimal and pipelined fast branches. I think it makes sense to keep around the unoptimized minimal version just for reference and learnings sake. I may also port it to MyHDL with the goal of making it even more approachable from a novice standpoint.
 
 

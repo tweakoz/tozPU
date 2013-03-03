@@ -9,31 +9,66 @@
 // encoding format
 
 // 0 operand instruction  
-// 0x0xxx .. 0x3xxx
 //	   2 bits: encoding [00]
-//     6 bits: instruction
+//     2 bits: lsu ins
+//     4 bits: alu ins
 //    24 bits: data
 
 // 1 operand instruction (1 in or 1 out) 
-// 0x4xxx .. 0x7xxx
 //	   2 bits: encoding [01]
-//     6 bits: instruction
+//     2 bits: lsu ins
+//     4 bits: alu ins
 //     4 bits: registers
 //    20 bits: data
 
 // 2 operand instruction (1 in, 1 out) 
-// 0x8xxx .. 0xbxxx
 //	   2 bits: encoding [10]
-//     6 bits: instruction
+//     2 bits: lsu ins
+//     4 bits: alu ins
 //     8 bits: registers
 //    16 bits: data
 
 // 3 operand instruction (2 in, 1 out)
-// 0xcxxx .. 0xfxxx
 //	   2 bits: encoding [11]
-//     6 bits: instruction
+//     2 bits: lsu ins
+//     4 bits: alu ins
 //    12 bits: registers
 //    12 bits: data
+
+//////////////////////////////////////////////////////////////////
+// ROM
+//////////////////////////////////////////////////////////////////
+
+module tweak_rom( input read_ena,
+				  input [3:0] addr_in,
+				  output [31:0] data_out );
+ 
+	parameter NUMWORDS = 8;
+	parameter WORDSIZE = 32;
+	
+	reg [ WORDSIZE -1 : 0 ] InsMem[ 0: NUMWORDS-1 ];
+	reg [ WORDSIZE -1 : 0 ] OutReg;
+	
+	initial begin
+		OutReg = 0;
+		InsMem[0] = { 2'b00, 2'b01, 4'h0, 24'hffffff };
+		InsMem[1] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+		InsMem[2] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+		InsMem[3] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+		InsMem[4] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+		InsMem[5] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+		InsMem[6] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+		InsMem[7] = { 2'b00, 2'b00, 4'h0, 24'hffffff };
+	end
+
+	always @( posedge read_ena )
+		begin
+		OutReg = InsMem[ addr_in[ 2:0 ] ];
+		end
+
+	assign data_out = OutReg;
+	
+ endmodule
 
 //////////////////////////////////////////////////////////////////
 // instruction decoder
@@ -41,7 +76,8 @@
 
 module tweak_decoder(	input [31:0] OPCODE,		// incoming: composite instruction code
 						output [1:0] encoding,		// outgoing: encoding format 
-						output [5:0] alu_opcode,	// outgoing: decoded alu opcode
+						output [3:0] alu_opcode,	// outgoing: decoded alu opcode
+						output [1:0] lsu_opcode,	// outgoing: decoded lsu opcode
 						output [23:0] immed_data,	// outgoing: immediate data
 						output [11:0] reg_code );	// outgoing: register data
 				 
@@ -89,7 +125,8 @@ module tweak_decoder(	input [31:0] OPCODE,		// incoming: composite instruction c
 	//////////////////////////////////////////
 	
 	assign encoding[1:0] = format_code[1:0];		
-	assign alu_opcode[5:0] = instr_code[5:0];		
+	assign alu_opcode[3:0] = instr_code[3:0];		
+	assign lsu_opcode[1:0] = instr_code[5:4];		
 	assign immed_data[23:0] = data_out[23:0];		
 	assign reg_code[11:0] = regs_out[11:0];		
 	
@@ -99,42 +136,52 @@ endmodule
 // ALU
 //////////////////////////////////////////////////////////////////
 
-module tweak_alu(	input [5:0] alu_opcode, 
+module tweak_alu(	input [3:0] alu_opcode, 
 					input [31:0] arg_a, input [31:0] arg_b, 
 					output [31:0] result );
 
 	parameter [4:0]
 
-		alucode_add = 6'b000000,
-		alucode_sub = 6'b000001,
-
-		alucode_and = 6'b000010,
-		alucode_or =  6'b000011,
-		alucode_xor = 6'b000100;
+		alucode_add = 4'h0,
+		alucode_sub = 4'h1,
+		alucode_and = 4'h2,
+		alucode_or =  4'h3,
+		alucode_xor = 4'h4,
+		alucode_asl = 4'h5,
+		alucode_asr = 4'h6;
 	
-	wire [31:0] res_mux;
-
 	wire [31:0] res_add = (arg_a+arg_b);
 	wire [31:0] res_sub = (arg_a-arg_b);
 	wire [31:0] res_and = (arg_a&arg_b);
-	wire [31:0] res_or = (arg_a|arg_b);
+	wire [31:0] res_or  = (arg_a|arg_b);
 	wire [31:0] res_xor = (arg_a^arg_b);
+	wire [31:0] res_asl = (arg_a<<arg_b);
+	wire [31:0] res_asr = (arg_a>>arg_b);
 
-	assign res_mux
+	assign result
 		= (alu_opcode==alucode_add) ? res_add
 		: (alu_opcode==alucode_sub) ? res_sub
 		: (alu_opcode==alucode_and) ? res_and
 		: (alu_opcode==alucode_xor) ? res_xor
-		: (alu_opcode==alucode_or) ? res_or
+		: (alu_opcode==alucode_or)  ? res_or
+		: (alu_opcode==alucode_asl) ? res_asl
+		: (alu_opcode==alucode_asr) ? res_asr
 		: arg_a;
 		
-	assign result[31:0] = res_mux[31:0];
-
 endmodule
 
 //////////////////////////////////////////////////////////////////
-// Register Load Store Controller
+// LSU
 //////////////////////////////////////////////////////////////////
+
+module tweak_lsu( input [1:0] lsu_opcode, 
+				  output load,
+				  output store );
+
+	assign load = (lsu_opcode==2'b01);
+	assign store = (lsu_opcode==2'b10);
+
+endmodule
 
 //////////////////////////////////////////////////////////////////
 // Registers
@@ -156,12 +203,21 @@ module tweak_registers( input clear_trigger,
 	always @( clear_trigger )
 		begin
 			registers[0] <= 0;
-			registers[1] <= 1;
-			registers[2] <= 2;
-			registers[3] <= 3;
-			registers[4] <= 4;
-			registers[5] <= 5;
-			registers[6] <= 6;
+			registers[1] <= 0;
+			registers[2] <= 0;
+			registers[3] <= 0;
+			registers[4] <= 0;
+			registers[5] <= 0;
+			registers[6] <= 0;
+			registers[7] <= 0;
+			registers[8] <= 0;
+			registers[9] <= 0;
+			registers[10] <= 0;
+			registers[11] <= 0;
+			registers[12] <= 0;
+			registers[13] <= 0;
+			registers[14] <= 0;
+			registers[15] <= 0;
 		end
 	always @( posedge s_trigger )
 		begin
@@ -176,43 +232,8 @@ module tweak_registers( input clear_trigger,
 	assign outpb = outbufb;
 
 endmodule
-
-//////////////////////////////////////////////////////////////////
-// ROM
-//////////////////////////////////////////////////////////////////
-
-module tweak_rom( input read_ena,
-				  input [3:0] addr_in,
-				  output [31:0] data_out );
  
-	parameter NUMWORDS = 8;
-	parameter WORDSIZE = 32;
-	
-	reg [ WORDSIZE -1 : 0 ] InsMem[ 0: NUMWORDS-1 ];
-	reg [ WORDSIZE -1 : 0 ] OutReg;
-	
-	initial begin
-		OutReg = 0;
-		InsMem[0] = { 8'hf0, 8'h00, 16'h1 };
-		InsMem[1] = { 8'h40, 8'h00, 16'h1 };
-		InsMem[2] = { 8'hf0, 8'h00, 16'h2 };
-		InsMem[3] = { 8'h30, 8'h00, 16'h3 };
-		InsMem[4] = { 8'h00, 8'h00, 16'h4 };
-		InsMem[5] = { 8'hf0, 8'h00, 16'h5 };
-		InsMem[6] = { 8'h00, 8'h00, 16'h6 };
-		InsMem[7] = { 8'h60, 8'h00, 16'h7 };
-	end
-
-	always @( posedge read_ena )
-		begin
-		OutReg = InsMem[ addr_in[ 2:0 ] ];
-		end
-
-	assign data_out = OutReg;
-	
- endmodule
- 
- //////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 
 module tweak_cpu( input CLK,
 				  input RESET,
@@ -250,7 +271,7 @@ module tweak_cpu( input CLK,
 	wire 		reg_clear_trigger;
 	wire 		reg_l_trigger;
 	wire 		reg_s_trigger;
-	reg [31:0] reg_input;
+	reg [31:0]  reg_input;
 
 	wire [3:0]	reg_addra;
 	wire [3:0]	reg_addrb;
@@ -267,12 +288,16 @@ module tweak_cpu( input CLK,
 	wire [31:0] alu_result;
 	reg [31:0] alu_result_buf;
 
+	wire lsu_load;
+	wire lsu_store;
+
 	//////////////////////////////
 	// decoder output
 	//////////////////////////////
 
 	wire [1:0] dec_encoding_fmt;
-	wire [5:0] dec_alu_opcode;
+	wire [3:0] dec_alu_opcode;
+	wire [1:0] dec_lsu_opcode;
 	wire [23:0] dec_immed_data;
 	wire [11:0] dec_register_code;
 
@@ -322,12 +347,7 @@ module tweak_cpu( input CLK,
 	assign reg_clear_trigger = ! RESET;
 	assign reg_addra[3:0] = dec_register_code[3:0];
 	assign reg_addrb[3:0] = dec_register_code[7:4];
-
-	assign reg_l_trigger = phase_A&phase_B;// & (dec_encoding_fmt==1) & (dec_alu_opcode<2);
-
-	//always @ (posedge phase_B )
-	//	begin
-	//	end
+	assign reg_l_trigger = phase_A&phase_B&lsu_load;
 
 	//////////////////////////////
 	// PhaseC 
@@ -341,11 +361,11 @@ module tweak_cpu( input CLK,
 		end
 
 	//////////////////////////////
-	// PhaseD (store, ins addr ca)
+	// PhaseD (store, IP address ca)
 	//////////////////////////////
 
-	assign reg_s_trigger = phase_C&phase_D;// & (dec_encoding_fmt==1) & (dec_alu_opcode<2);
-
+	assign reg_s_trigger = phase_C&phase_D&lsu_store;
+	
 	always @( posedge phase_D )
 		begin
 		rom_address <= rom_address+1;
@@ -356,14 +376,11 @@ module tweak_cpu( input CLK,
 	//  todo : replace with load store controller
 	//////////////////////////////
 
-
 	assign reg_address = dec_register_code[3:0];
 
 	//////////////////////////////
 	// instantiate units
 	//////////////////////////////
-
-	tweak_decoder	the_decoder( composite_opcode, dec_encoding_fmt, dec_alu_opcode, dec_immed_data, dec_register_code );
 
 	tweak_registers	the_regs( reg_clear_trigger,
 							  reg_l_trigger,
@@ -373,6 +390,15 @@ module tweak_cpu( input CLK,
 							  reg_input,
 							  reg_outpa,
 							  reg_outpb );
+
+	tweak_decoder	the_decoder( composite_opcode,
+								 dec_encoding_fmt,
+								 dec_alu_opcode,
+								 dec_lsu_opcode,
+								 dec_immed_data,
+								 dec_register_code );
+
+	tweak_lsu       the_lsu( dec_lsu_opcode, lsu_load, lsu_store );
 
 	tweak_alu		the_alu( dec_alu_opcode, 
 							 reg_outpa, reg_outpb, 

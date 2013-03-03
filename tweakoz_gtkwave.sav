@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.34 (w)1999-2012 BSI
-[*] Sun Mar  3 06:45:49 2013
+[*] Sun Mar  3 07:32:45 2013
 [*]
 [dumpfile] "/projects/tweakoz/tweakpu/tweakpu.vcd"
-[dumpfile_mtime] "Sun Mar  3 06:45:08 2013"
-[dumpfile_size] 15400
+[dumpfile_mtime] "Sun Mar  3 07:31:07 2013"
+[dumpfile_size] 14165
 [savefile] "/projects/tweakoz/tweakpu/tweakoz_gtkwave.sav"
 [timestart] 0
 [size] 1474 1086
 [pos] 0 4
-*-4.376271 47 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-4.376271 11 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.tpu.
 [sst_width] 271
@@ -42,9 +42,12 @@ testbench.tpu.composite_opcode[31:0]
 @28
 testbench.tpu.dec_encoding_fmt[1:0]
 @22
-testbench.tpu.dec_alu_opcode[5:0]
 testbench.tpu.dec_immed_data[23:0]
 testbench.tpu.dec_register_code[11:0]
+@28
+testbench.tpu.dec_lsu_opcode[1:0]
+@23
+testbench.tpu.dec_alu_opcode[3:0]
 @200
 -
 @22
@@ -64,6 +67,11 @@ testbench.tpu.the_alu.arg_a[31:0]
 testbench.tpu.the_alu.arg_b[31:0]
 testbench.tpu.alu_result[31:0]
 testbench.tpu.alu_result_buf[31:0]
+@200
+-
+@28
+testbench.tpu.lsu_load
+testbench.tpu.lsu_store
 @200
 -
 @28

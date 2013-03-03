@@ -1,21 +1,21 @@
 [*]
 [*] GTKWave Analyzer v3.3.34 (w)1999-2012 BSI
-[*] Sun Mar  3 10:08:55 2013
+[*] Sun Mar  3 20:09:42 2013
 [*]
-[dumpfile] "/projects/tweakoz/tweakpu/tweakpu.vcd"
-[dumpfile_mtime] "Sun Mar  3 10:08:41 2013"
-[dumpfile_size] 28161
-[savefile] "/projects/tweakoz/tweakpu/tweakoz_gtkwave.sav"
+[dumpfile] "/projects/tweakoz/tozPU/tweakpu.vcd"
+[dumpfile_mtime] "Sun Mar  3 20:08:12 2013"
+[dumpfile_size] 27776
+[savefile] "/projects/tweakoz/tozPU/tweakoz_gtkwave.sav"
 [timestart] 0
-[size] 1474 1086
-[pos] 0 4
-*-4.376271 25 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1510 1035
+[pos] 228 23
+*-3.376271 31 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.tpu.
 [sst_width] 271
 [signals_width] 283
 [sst_expanded] 1
-[sst_vpaned_height] 314
+[sst_vpaned_height] 296
 @28
 testbench.RESET
 @200
@@ -46,18 +46,18 @@ testbench.tpu.dec_register_code[11:0]
 @200
 -
 @28
+testbench.tpu.lu_loadi
+@29
+testbench.tpu.lu_loadr
+@28
 testbench.tpu.lur_trigger
 @22
 testbench.tpu.lu_addra[3:0]
 testbench.tpu.lu_addrb[3:0]
-@28
-testbench.tpu.lu_loadi
-testbench.tpu.lu_loadr
 @200
 -
-@29
-testbench.tpu.sur_store
 @28
+testbench.tpu.sur_store
 testbench.tpu.sur_trigger
 testbench.tpu.su_src_imm
 @22

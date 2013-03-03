@@ -6,7 +6,7 @@ import os.path
 def spawner( cmdline ):
         os.system( cmdline )
 
-spawner( "iverilog src/tweakpu.v" );
-spawner( "vvp a.out" );
+spawner( "iverilog -o vvp/tweakpu.vvp src/tweakpu.v" );
+spawner( "vvp vvp/tweakpu.vvp" );
 spawner( "gtkwave tweakpu.vcd tweakoz_gtkwave.sav" );
 

@@ -1,8 +1,21 @@
+[*]
+[*] GTKWave Analyzer v3.3.34 (w)1999-2012 BSI
+[*] Sun Mar  3 00:58:11 2013
+[*]
+[dumpfile] "/projects/tweakoz/tweakpu/tweakpu.vcd"
+[dumpfile_mtime] "Sun Mar  3 00:55:41 2013"
+[dumpfile_size] 19990
+[savefile] "/projects/tweakoz/tweakpu/tweakoz_gtkwave.sav"
+[timestart] 0
 [size] 1440 853
 [pos] -1 -1
-*-4.376271 19 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-4.376271 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.tpu.
+[sst_width] 271
+[signals_width] 195
+[sst_expanded] 1
+[sst_vpaned_height] 232
 @28
 testbench.RESET
 testbench.tpu.rENA
@@ -11,6 +24,17 @@ testbench.tpu.rENAD
 -
 @28
 testbench.tpu.CLK
+testbench.tpu.NCLK
+@200
+-
+@28
+testbench.tpu.HCLK
+testbench.tpu.HCLK2
+testbench.tpu.HCLK3
+testbench.tpu.HCLK4
+@200
+-
+@28
 testbench.tpu.phase_A
 testbench.tpu.phase_B
 testbench.tpu.phase_C
@@ -19,15 +43,11 @@ testbench.tpu.phase_D
 -
 @22
 testbench.tpu.ADDRESS[3:0]
-@23
 testbench.tpu.memdata[31:0]
 @200
 -
 @22
 testbench.tpu.curinsA[31:0]
-testbench.tpu.curinsB[31:0]
-testbench.tpu.curinsC[31:0]
-testbench.tpu.curinsD[31:0]
 @200
 -
 @28
@@ -39,37 +59,17 @@ testbench.tpu.rcodeA[11:0]
 @200
 -
 @28
-testbench.tpu.ecodeB[1:0]
-@22
-testbench.tpu.icodeB[5:0]
-testbench.tpu.dcodeB[23:0]
-testbench.tpu.rcodeB[11:0]
+testbench.tpu.MyRegs.ReadTrigger
 @200
 -
-@28
-testbench.tpu.ecodeC[1:0]
-@22
-testbench.tpu.icodeC[5:0]
-testbench.tpu.dcodeC[23:0]
-testbench.tpu.rcodeC[11:0]
-@200
--
-@28
-testbench.tpu.ecodeD[1:0]
-@22
-testbench.tpu.icodeD[5:0]
-testbench.tpu.dcodeD[23:0]
-testbench.tpu.rcodeD[11:0]
-@200
 -
 @22
+testbench.tpu.RegAddress[3:0]
 testbench.tpu.regibuf[31:0]
 testbench.tpu.regobuf[31:0]
 testbench.tpu.RegOutput[31:0]
 testbench.tpu.RegInput[31:0]
-testbench.tpu.RegAddress[3:0]
 @28
 testbench.tpu.RegrW
-@22
-testbench.tpu.alu2res[31:0]
-testbench.tpu.alu3res[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.34 (w)1999-2012 BSI
-[*] Sun Mar  3 07:32:45 2013
+[*] Sun Mar  3 10:08:55 2013
 [*]
 [dumpfile] "/projects/tweakoz/tweakpu/tweakpu.vcd"
-[dumpfile_mtime] "Sun Mar  3 07:31:07 2013"
-[dumpfile_size] 14165
+[dumpfile_mtime] "Sun Mar  3 10:08:41 2013"
+[dumpfile_size] 28161
 [savefile] "/projects/tweakoz/tweakpu/tweakoz_gtkwave.sav"
 [timestart] 0
 [size] 1474 1086
 [pos] 0 4
-*-4.376271 11 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-4.376271 25 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.tpu.
 [sst_width] 271
@@ -39,40 +39,39 @@ testbench.tpu.rom_data[31:0]
 -
 @22
 testbench.tpu.composite_opcode[31:0]
-@28
-testbench.tpu.dec_encoding_fmt[1:0]
-@22
+testbench.tpu.dec_encoding_fmt[3:0]
+testbench.tpu.dec_alu_opcode[3:0]
 testbench.tpu.dec_immed_data[23:0]
 testbench.tpu.dec_register_code[11:0]
-@28
-testbench.tpu.dec_lsu_opcode[1:0]
-@23
-testbench.tpu.dec_alu_opcode[3:0]
 @200
 -
-@22
-testbench.tpu.reg_input[31:0]
-testbench.tpu.reg_addra[3:0]
-testbench.tpu.reg_addrb[3:0]
 @28
-testbench.tpu.reg_l_trigger
-testbench.tpu.reg_s_trigger
+testbench.tpu.lur_trigger
 @22
-testbench.tpu.the_regs.outpa[31:0]
-testbench.tpu.the_regs.outpb[31:0]
+testbench.tpu.lu_addra[3:0]
+testbench.tpu.lu_addrb[3:0]
+@28
+testbench.tpu.lu_loadi
+testbench.tpu.lu_loadr
 @200
+-
+@29
+testbench.tpu.sur_store
+@28
+testbench.tpu.sur_trigger
+testbench.tpu.su_src_imm
+@22
+testbench.tpu.su_src[31:0]
+testbench.tpu.su_addr[3:0]
+@200
+-
 -
 @22
 testbench.tpu.the_alu.arg_a[31:0]
 testbench.tpu.the_alu.arg_b[31:0]
 testbench.tpu.alu_result[31:0]
-testbench.tpu.alu_result_buf[31:0]
 @200
 -
-@28
-testbench.tpu.lsu_load
-testbench.tpu.lsu_store
-@200
 -
 @28
 testbench.tpu.phase_A
